@@ -1,0 +1,4 @@
+- name: Insert iptables rule
+  sudo: yes
+  lineinfile: dest=/etc/sysconfig/iptables line="-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT" insertafter="^:OUTPUT " 
+  notify: Restart iptables

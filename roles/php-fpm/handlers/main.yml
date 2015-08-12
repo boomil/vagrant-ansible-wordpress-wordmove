@@ -1,0 +1,3 @@
+- name: Restart php-fpm
+  sudo: yes
+  service: name=php-fpm state=restarted

@@ -1,0 +1,29 @@
+- name: get epel repo
+  get_url: url="http://ftp-srv2.kddilabs.jp/Linux/distributions/fedora/epel/6/x86_64/epel-release-6-8.noarch.rpm" dest=/var/tmp/epel-release-6-8.noarch.rpm
+  sudo: yes
+
+- name: set epel repo
+  yum: name=/var/tmp/epel-release-6-8.noarch.rpm state=present
+  sudo: yes
+    
+- name: "CentOS 6.1, 6.2, 6.3ではepelへの接続にSSL3.0を使ってこけるので、httpsではなくhttpを使うようにする"
+  sudo: yes
+  command: sed -i 's/\(mirrorlist=http\)s/\1/' /etc/yum.repos.d/epel.repo
+  register: ret
+  changed_when: ret.rc != 0
+  
+- name: get remi repo
+  get_url: url="http://rpms.famillecollet.com/enterprise/remi-release-6.rpm" dest=/var/tmp/remi-release-6.rpm
+  sudo: yes
+
+- name: set remi repo
+  yum: name=/var/tmp/remi-release-6.rpm state=present
+  sudo: yes
+
+# 
+- name: "epel, remiはenabledを0にして明示的に指定させる"
+  sudo: yes
+  replace: dest=/etc/yum.repos.d/{{ item }} regexp="enabled *= *1" replace="enabled=0"
+  with_items:
+    - epel.repo
+    - remi.repo

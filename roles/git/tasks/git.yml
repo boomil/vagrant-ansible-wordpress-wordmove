@@ -1,0 +1,3 @@
+- name: Install git
+  sudo: true
+  yum: name=git state=present

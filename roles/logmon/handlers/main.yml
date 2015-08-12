@@ -1,0 +1,3 @@
+- name: Restart logmon
+  sudo: yes
+  service: name=logmon state=started

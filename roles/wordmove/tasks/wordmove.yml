@@ -1,0 +1,9 @@
+- name: Install rsync
+  sudo: yes
+  yum: name=rsync state=present
+
+- name: Install wordmove
+  sudo: yes
+  command: /bin/bash -l -c "gem install wordmove"
+  register: ret
+  changed_when: ret.rc != 0

@@ -1,0 +1,2 @@
+- include: wp-cli.yml tags=wp-cli
+- include: wordpress.yml tags=wordpress

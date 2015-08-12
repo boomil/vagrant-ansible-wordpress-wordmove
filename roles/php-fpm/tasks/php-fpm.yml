@@ -1,0 +1,26 @@
+- name: Create WordPress directory
+  sudo: yes
+  file: path={{ wp_fullpath_dir }} state=directory owner=nginx group=nginx mode=0755
+
+- name: Install php-fpm and deps
+  sudo: yes
+  yum: name={{ item }} state=present enablerepo=remi,remi-php56
+  with_items:
+    - php-fpm
+    - php-enchant
+    - php-mbstring
+    - php-mysql
+    - php-process
+    - php-xml
+
+- name: Enable php-fpm
+  sudo: yes
+  service: name=php-fpm state=running enabled=yes
+
+- name: Change owner of php session directory
+  sudo: yes
+  file: path=/var/lib/php/session owner=root group=nginx
+
+- name: Change owner of php wsdlcache directory
+  sudo: yes
+  file: path=/var/lib/php/wsdlcache owner=root group=nginx

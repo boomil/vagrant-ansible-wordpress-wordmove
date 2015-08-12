@@ -1,0 +1,26 @@
+- name: "Install dependent library"
+  sudo: yes
+  yum: name=libmcrypt-devel state=present enablerepo=epel
+
+- name: "Install PHP"
+  sudo: yes
+  yum: name={{item}} state=present enablerepo=remi,remi-php56
+  with_items:
+    - php
+    - php-devel
+    - php-mysqlnd
+    - php-pear
+    - php-mbstring
+    - php-mcrypt
+    - php-gd
+    - php-opcache
+    - php-pecl-apcu
+    - php-xml
+    - php-fpm
+
+- name: "Change upload max filesize"
+  sudo: yes
+  replace: >
+    dest='/etc/php.ini'
+    regexp='upload_max_filesize = [0-9]+M'
+    replace='upload_max_filesize = 16M'

@@ -1,0 +1,34 @@
+# Special string
+colon: ':'
+
+# WordPress version
+wp_version: 4.2.4
+wp_locale: ja
+
+# WordPress databases
+wp_db_name: wordpress
+wp_db_user: wordpress
+wp_db_password: password
+
+# WordPress pathes
+wp_root_dir: "/var/www"
+wp_sub_dir: "/blog"
+wp_fullpath_dir: "{{wp_root_dir}}{{wp_sub_dir}}"
+
+# WordPress install
+wp_title: wp-title
+wp_admin_name: admin
+wp_admin_mail: admin@example.com
+wp_admin_pass: admin
+
+# MySQL
+mysql_port: 3306
+mysql_root_password: password
+
+# Site
+wp_port: 80
+wp_host: dev.www.example.com
+wp_host_redirect: dev.example.com
+
+# yum fastestmirror area
+yum_fastestmirror_include_only: .jp

@@ -1,0 +1,56 @@
+- name: Template nginx conf
+  sudo: yes
+  template: src=wordpress.conf dest=/etc/nginx/conf.d/{{ wp_host }}.conf
+  notify: Restart nginx
+
+- name: Create WordPress directory
+  sudo: yes
+  file: path={{ wp_fullpath_dir }} state=directory owner=nginx group=nginx mode=0755
+
+- name: Check is exist WordPress
+  stat: path="{{ wp_fullpath_dir }}/index.php"
+  register: is_exist_wordpress
+  
+- name: Download WordPress
+  sudo: yes
+  sudo_user: nginx
+  command: /usr/local/bin/wp core download --version={{ wp_version }} --path={{ wp_fullpath_dir }} --locale={{ wp_locale }}
+  when: is_exist_wordpress.stat.md5 is not defined
+
+- name: Get salts
+  local_action: command curl https://api.wordpress.org/secret-key/1.1/salt/
+  register: "wp_salt"
+
+- name: Template wp-config
+  sudo: yes
+  template: src=wp-config.php dest={{ wp_fullpath_dir }}/wp-config.php mode=0404
+
+- name: Create WordPress database
+  mysql_db:
+    name={{ wp_db_name }}
+    state=present
+    login_user=root
+    login_password="{{ mysql_root_password }}"
+
+- name: Create WordPress database user
+  mysql_user: name={{ wp_db_user }} password={{ wp_db_password }} priv={{ wp_db_name }}.*:ALL host='localhost' state=present
+    login_user=root
+    login_password="{{ mysql_root_password }}"
+
+- name: Change owner of WordPress files
+  sudo: yes
+  file: path={{ wp_fullpath_dir }} owner=nginx group=nginx state=directory recurse=yes
+
+- name: Install WordPress
+  sudo: yes
+  sudo_user: nginx
+  command: /usr/local/bin/wp core install --url={{wp_host}}{{wp_sub_dir}} --title="{{ wp_title }}" --admin_name="{{ wp_admin_name }}" --admin_email="{{ wp_admin_mail }}" --admin_password={{ wp_admin_pass }} --path={{ wp_fullpath_dir }}
+  register: ret
+  changed_when: ret.stdout != "WordPress is already installed."
+
+- name: Set locale
+  sudo: yes
+  sudo_user: nginx
+  command: /usr/local/bin/wp core language activate {{ wp_locale }} --path={{ wp_fullpath_dir }}
+  register: ret
+  changed_when: ret.stdout != 'Success{{colon}} Language activated.'

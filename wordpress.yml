@@ -1,0 +1,25 @@
+- name: Install wordpress-server
+  hosts: wordpress-server
+  remote_user: root
+  roles:
+    - common
+    - repos
+    - mysql
+    - nginx
+    - php
+    - php-fpm
+    - wordpress
+
+- name: Install wordpress-server-development
+  hosts: wordpress-server-development
+  remote_user: root
+  roles:
+    - { role: rvm_io.rvm1-ruby, tags: ruby, sudo: True }
+    - wordmove
+
+- name: Install wordpress-server-production
+  hosts: wordpress-server-production
+  remote_user: root
+  roles:
+    - git
+    - logmon

@@ -1,0 +1,22 @@
+- name: Clone logmon
+  sudo: yes
+  git: repo=https://github.com/moomindani/logmon.git dest=/tmp/logmon
+
+- name: Install logmon
+  sudo: yes
+  command: sh setup.sh
+  args:
+    chdir: /tmp/logmon
+  register: ret
+  changed_when: ret.rc != 0
+
+- name: Template logmon conf
+  sudo: yes
+  template:
+    src: logmon.conf
+    dest: "/etc/logmon/logmon.conf"
+  notify: Restart logmon
+
+- name: Install mail
+  sudo: true
+  yum: name=mail state=present

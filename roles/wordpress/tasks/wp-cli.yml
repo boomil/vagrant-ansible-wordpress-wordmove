@@ -1,0 +1,19 @@
+- name: Check is exist wp-cli
+  file: path=/usr/local/bin/wp state=file
+  register: cli_exists
+  ignore_errors: yes
+
+- name: Install wp-cli
+  sudo: yes
+  shell: curl -kL https://raw.github.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > ~/wp-cli.phar
+  when: cli_exists|failed
+
+- name: Install wp-cli
+  sudo: yes
+  command: mv -f ~/wp-cli.phar /usr/local/bin/wp
+  when: cli_exists|failed
+
+- name: Chmod wp-cli
+  sudo: yes
+  file: path=/usr/local/bin/wp mode=0755
+  when: cli_exists|failed

@@ -1,0 +1,8 @@
+- name: Set yum fastestmirror include_only
+  sudo: yes
+  lineinfile: >
+    dest="/etc/yum/pluginconf.d/fastestmirror.conf"
+    line="include_only={{yum_fastestmirror_include_only}}"
+    state=present
+    regexp="^#?include_only="
+    create=yes
