@@ -17,6 +17,20 @@
   sudo: yes
   service: name=php-fpm state=running enabled=yes
 
+- name: Change user
+  sudo: yes
+  replace: >
+    dest='/etc/php-fpm.d/www.conf'
+    regexp='user = apache'
+    replace='user = nginx'
+    
+- name: Change group
+  sudo: yes
+  replace: >
+    dest='/etc/php-fpm.d/www.conf'
+    regexp='group = apache'
+    replace='group = nginx'
+    
 - name: Change owner of php session directory
   sudo: yes
   file: path=/var/lib/php/session owner=root group=nginx
@@ -24,3 +38,4 @@
 - name: Change owner of php wsdlcache directory
   sudo: yes
   file: path=/var/lib/php/wsdlcache owner=root group=nginx
+
