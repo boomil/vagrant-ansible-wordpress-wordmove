@@ -23,6 +23,7 @@
     dest='/etc/php-fpm.d/www.conf'
     regexp='user = apache'
     replace='user = nginx'
+  notify: Restart php-fpm
     
 - name: Change group
   sudo: yes
@@ -30,6 +31,7 @@
     dest='/etc/php-fpm.d/www.conf'
     regexp='group = apache'
     replace='group = nginx'
+  notify: Restart php-fpm
     
 - name: Change owner of php session directory
   sudo: yes
