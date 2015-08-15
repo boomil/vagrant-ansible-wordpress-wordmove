@@ -2,6 +2,10 @@
   sudo: yes
   yum: name=rsync state=present
 
+- name: Install sshpass
+  sudo: yes
+  yum: name=sshpass enablerepo=epel state=present
+
 - name: Install wordmove
   sudo: yes
   command: /bin/bash -l -c "gem install wordmove"
